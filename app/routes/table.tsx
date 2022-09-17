@@ -1,5 +1,6 @@
 import { Link, useLoaderData, useFetcher } from '@remix-run/react';
 import type { ActionArgs} from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
 import { getAllUsers, update } from '~/data';
 // @ts-expect-error
@@ -21,7 +22,10 @@ export async function action({request}: ActionArgs) {
   const formData = await request.formData();
   const checked = formData.get("checked");
   const id = formData.get("id");
+
   update(id, checked);
+
+  return redirect("/table");
 }
 
 function SortLink({
@@ -63,15 +67,15 @@ export default function Table() {
         </th>
       </thead>
       <tbody>
-        {users.map((user: any) => (
-          <tr key={user.id}>
+        {users.map((user: any) => {
+          return(<tr key={user.id}>
             <td>{user.firstName}</td>
             <td>{user.lastName}</td>
-            <td><input type="checkbox" onChange={(x) => {
-              fetcher.submit({id: user.id, checked: x.currentTarget.checked}, {method: "post", action: "/table", replace: false})
-            }}></></td>
+            <td><input type="checkbox" checked={user.checked} onChange={(x) => {
+              fetcher.submit({id: user.id, checked: !user.checked as any}, {method: "post", action: "/table", replace: false})
+            }}></input></td>
           </tr>
-        ))}
+        )})}
       </tbody>
     </table>
   );

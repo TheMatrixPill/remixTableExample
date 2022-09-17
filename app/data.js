@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
 
 global.USERS ??= [];
 
@@ -7,11 +7,13 @@ export function createRandomUser() {
     id: faker.datatype.uuid(),
     firstName: faker.name.firstName(),
     lastName: faker.name.lastName(),
+    checked: false,
   };
 }
 
-export function update(id, checked){
-  
+export function update(id, checked) {
+  let g = USERS.find((x) => x.id == id);
+  if (g) g.checked = "true" === checked;
 }
 
 export function getAllUsers() {
